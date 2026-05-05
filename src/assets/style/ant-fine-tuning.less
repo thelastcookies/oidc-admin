@@ -1,0 +1,95 @@
+/**
+ * 用于 ant-design-vue 的全局样式调整
+ */
+
+// 调整使用 BaseIcon 时的 Button 组件的 label 左边距
+.ant-btn > .base-icon + span, .ant-btn > span + .base-icon {
+  margin-inline-start: 6px;
+}
+
+// Spin 组件内部 container
+.ant-spin-container {
+  height: 100%;
+  width: 100%;
+}
+
+// Table 组件斑马纹
+.ant-table .ant-table-tbody tr {
+  &:nth-child(odd) {
+    background-color: var(--tableTrBg);
+  }
+
+  &:nth-child(even) {
+    background-color: var(--tableTrStripedBg);
+  }
+}
+
+// Form 组件 disabled 样式
+.ant-input-disabled {
+  color: var(--colorTextSecondary) !important;
+}
+
+.ant-select-disabled {
+  .ant-select-selector {
+    color: var(--colorTextSecondary) !important;
+  }
+}
+
+// 修复默认样式的鼠标指针闪烁问题
+.ant-form-item-tooltip {
+  .anticon[tabindex] {
+    cursor: help
+  }
+}
+
+// 顶部菜单样式
+.ant-menu-horizontal {
+  background-color: transparent !important;
+  justify-content: flex-end;
+  border-bottom: 0;
+
+  .ant-menu-item,
+  .ant-menu-submenu {
+    color: #FFF;
+    line-height: 48px;
+
+    &::after {
+      bottom: 2px !important;
+    }
+
+    .ant-menu-submenu-title {
+      color: #FFF;
+      line-height: 48px;
+    }
+  }
+
+  // 悬浮时文字颜色（针对浅色模式下的默认样式覆盖）
+  .ant-menu-item-active,
+  .ant-menu-submenu-active {
+    color: #FFF !important;
+
+    .ant-menu-submenu-title {
+      color: #FFF !important;
+    }
+  }
+
+  // 选中时文字高亮颜色
+  .ant-menu-item-selected,
+  .ant-menu-submenu-selected {
+    color: var(--topMenuTextColor) !important;
+
+    .ant-menu-submenu-title {
+      color: var(--topMenuTextColor) !important;
+    }
+  }
+
+  // 高亮下划线，悬停和选中时可用
+  .ant-menu-item-active,
+  .ant-menu-submenu-active,
+  .ant-menu-item-selected,
+  .ant-menu-submenu-selected {
+    &::after {
+      border-bottom-color: var(--topMenuTextColor) !important;
+    }
+  }
+}

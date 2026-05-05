@@ -1,0 +1,139 @@
+<script setup lang="ts">
+/**
+ * table 属性与方法
+ */
+const selectedRowKeys = ref<Key[]>([]);
+const list = ref<RoleRecord[]>([]);
+const loading = ref(false);
+
+/**
+ * 模态框
+ */
+const modalOpen = ref(false);
+const modalType = ref(EditEnum.ADD);
+const modalData = ref<RoleRecord>({});
+
+/**
+ * 数据交互与处理方法
+ */
+const qForm = ref<Recordable<any>>({});
+const fetch = async () => {
+  loading.value = true;
+  const { Data } = await getRoleList({ Search: qForm.value });
+  if (Data) list.value = Data;
+  loading.value = false;
+};
+
+const onQuery = (form: Record<string, string>) => {
+  qForm.value = form;
+  fetch();
+};
+
+fetch();
+
+const handleReload = async () => {
+  await fetch();
+};
+
+const onSelectionChange = (keys: Key[]) => {
+  selectedRowKeys.value = keys;
+};
+
+const handleEdit = (type: EditEnum, data?: RoleRecord) => {
+  modalOpen.value = true;
+  modalType.value = type;
+  if (type === EditEnum.EDIT) {
+    if (data) modalData.value = { ...data };
+  } else if (type === EditEnum.ADD) {
+    modalData.value = {};
+  }
+};
+
+const handleDelete = async (id: string) => {
+  await batchDelete([id]);
+};
+
+const handleBatchDelete = async () => {
+  await batchDelete(selectedRowKeys.value as string[]);
+};
+
+const batchDelete = async (ids: string[]) => {
+  if (!ids.length) {
+    message.warn('请至少选择一条记录');
+    return;
+  }
+  try {
+    const { Success } = await deleteRole(ids);
+    if (Success) {
+      message.success('删除成功');
+      await handleReload();
+    } else {
+      message.error('删除失败');
+    }
+  } catch (e) {
+    message.error('删除失败');
+  }
+};
+</script>
+
+<template>
+  <div class="w-full h-full p-3 flex flex-col">
+    <QueryForm
+      class="py-2"
+      :fields="roleTableSearchFields"
+      v-model:form="qForm"
+      @query="onQuery"
+    />
+    <div class="flex-1">
+      <a-table
+        row-key="Id"
+        :columns="roleTableColumns" :data-source="list"
+        :row-selection="{
+          type: 'checkbox',
+          selectedRowKeys: selectedRowKeys,
+          onChange: onSelectionChange,
+          columnWidth: 50
+        }"
+        :loading="loading"
+      >
+        <template #title>
+          <div class="flex">
+            <div>角色列表</div>
+            <a-button ml-auto type="primary"
+              @click="handleEdit(EditEnum.ADD)">
+              <BaseIcon icon="i-mdi-plus" />
+              新增
+            </a-button>
+            <a-popconfirm
+              title="是否确认删除?"
+              @confirm="handleBatchDelete"
+            >
+              <a-button ml-2 danger>
+                <BaseIcon icon="i-mdi-trash-can-outline" />
+                删除
+              </a-button>
+            </a-popconfirm>
+          </div>
+        </template>
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.dataIndex === 'operation'">
+            <a-button btn-in-table type="link" @click="handleEdit(EditEnum.EDIT, record as RoleRecord)">编辑</a-button>
+            <a-divider type="vertical" />
+            <a-popconfirm
+              title="是否确认删除?"
+              @confirm="handleDelete(record.Id)"
+            >
+              <a-button btn-in-table danger type="link">删除</a-button>
+            </a-popconfirm>
+          </template>
+        </template>
+      </a-table>
+    </div>
+    <RoleModal
+      v-model:open="modalOpen"
+      :type="modalType"
+      :id="modalData.Id"
+      @submit="handleReload"
+    ></RoleModal>
+  </div>
+</template>
