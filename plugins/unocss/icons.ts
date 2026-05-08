@@ -333,4 +333,5 @@ export const safelistIcons = [
   'i-mdi-api',
   'i-mdi-hammer',
   'i-mdi-sickle',
+  'i-mdi-certificate',
 ];

@@ -2,31 +2,29 @@ import type { ActionRecordRaw } from '@/types/action';
 
 export const staticActions = createTree<ActionRecordRaw>([
   {
-    id: '1336647905518030848',
-    actionId: 'menu',
-    title: '示例菜单',
+    id: '1636643442430447616',
+    actionId: 'oidc',
+    title: 'OIDC 管理',
     type: MenuTypeEnum.MENU,
-    icon: 'i-mdi-format-list-text',
+    icon: 'i-mdi-certificate',
     sort: 1,
     showInMenu: true,
-    url: 'page',
-    children: [{
-      id: '1336647905518030849',
-      pId: '1336647905518030848',
-      actionId: 'page',
-      title: '示例页面',
-      type: MenuTypeEnum.PAGE,
-      sort: 11,
-      showInMenu: true,
-      url: '',
-      resource: 'pages/SamplePage.vue',
-      meta: {
-        title: '示例页面的示例标题',
-        subTitle: '副标题',
-        backEnable: true,
+    url: 'oidc',
+    children: [
+      {
+        id: '1636652592875048960',
+        pId: '1636643442430447616',
+        actionId: 'clientMgmt',
+        title: '客户端管理',
+        type: MenuTypeEnum.PAGE,
+        sort: 81,
+        showInMenu: true,
+        url: 'client',
+        resource: 'pages/client/Index.vue',
       },
-    }],
-  }, {
+    ],
+  },
+  {
     id: '1536643442430447616',
     actionId: 'settings',
     title: '系统管理',
@@ -98,25 +96,5 @@ export const staticActions = createTree<ActionRecordRaw>([
         resource: 'form/FormDesigner.vue',
       },
     ],
-  }, {
-    id: '1436644431724154880',
-    actionId: 'link',
-    title: '外链',
-    type: MenuTypeEnum.LINK,
-    icon: 'i-mdi-link',
-    sort: 7,
-    showInMenu: true,
-    url: 'link',
-    resource: 'https://www.baidu.com',
-  }, {
-    id: '1436644431724154881',
-    actionId: 'iframe',
-    title: 'IFrame',
-    type: MenuTypeEnum.IFRAME,
-    icon: 'i-mdi-cloud-outline',
-    sort: 8,
-    showInMenu: true,
-    url: 'iframe',
-    resource: 'https://antdv.com/components/overview-cn',
-  },
+  }
 ]);
