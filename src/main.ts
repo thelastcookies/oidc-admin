@@ -1,27 +1,39 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-
-export const app = createApp(App);
+import { handleOidcCallback } from '@/utils/oidc';
 
 // 全局样式表
 import '@/assets/style/index.less';
 
 // Pinia
 import { createPinia } from 'pinia';
-app.use(createPinia());
 
 // router
 import router from '@/router';
-// 导入路由守卫
 import '@/router/guards.ts';
-app.use(router);
 
 // UI框架 ant-design-vue
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
-app.use(Antd);
 
 // UnoCSS
 import 'virtual:uno.css';
 
-app.mount('#app');
+/**
+ * 应用初始化
+ *
+ * OIDC 回调必须在 Vue 应用挂载前处理，
+ * 因为回调 URL 是真实路径（如 /oidc/callback），不在 hash 路由中。
+ */
+const start = async () => {
+  const callbackHandled = await handleOidcCallback();
+  if (callbackHandled) return;
+
+  const app = createApp(App);
+  app.use(createPinia());
+  app.use(router);
+  app.use(Antd);
+  app.mount('#app');
+};
+
+start();

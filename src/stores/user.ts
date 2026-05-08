@@ -6,22 +6,34 @@ export const useUserStore = defineStore('user', () => {
 
   const getUserInfo = async () => {
     return new Promise<void | Error>((resolve, reject) => {
-      const { loginEnable } = useAppStore();
-      // 如果关闭了路由守卫
-      if (!loginEnable) {
-        userInfo.value = { Id: 'ROUTER_GUARD_DISABLE_PLACEHOLDER' };
-        return resolve();
-      }
-      // 获取用户信息
-      getOperatorInfo().then(res => {
-        if (!res.Success) {
-          reject(new Error(WITH_UNAUTHORIZED));
-        } else {
-          userInfo.value = res.Data!.UserInfo;
-          permCodes.value = res.Data!.Permissions;
-          resolve();
-        }
-      }).catch(e => reject(e));
+      /** OIDC 模式：从 ID Token 中提取用户信息 */
+      // if (import.meta.env.APP_OIDC_ISSUER) {
+      //   getOidcUser().then(user => {
+      //     console.log(user);
+      //     if (user) {
+      //       userInfo.value = {
+      //         Id: user.profile.sub,
+      //         UserName: user.profile.username || user.profile.name || user.profile.sub,
+      //         RealName: user.profile.name || user.profile.username || user.profile.sub,
+      //       };
+      //       resolve();
+      //     } else {
+      //       reject(new Error(WITH_UNAUTHORIZED));
+      //     }
+      //   }).catch(e => reject(e));
+      //   return;
+      // }
+      //
+      // /** 传统模式：从后端 API 获取用户信息 */
+      // getOperatorInfo().then(res => {
+      //   if (!res.Success) {
+      //     reject(new Error(WITH_UNAUTHORIZED));
+      //   } else {
+      //     userInfo.value = res.Data!.UserInfo;
+      //     permCodes.value = res.Data!.Permissions;
+      //     resolve();
+      //   }
+      // }).catch(e => reject(e));
     });
   };
 
@@ -42,4 +54,3 @@ export const useUserStore = defineStore('user', () => {
     $reset,
   };
 });
-

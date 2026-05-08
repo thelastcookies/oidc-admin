@@ -2,8 +2,58 @@ const loginPath = '/login';
 const samplePath = '/sample';
 const accessWhileList = [loginPath, '/error', '/401', '/403', '/404', '/500'];
 
+/** OIDC 事件监听是否已初始化 */
+let oidcEventsInitialized = false;
+
+/**
+ * 初始化 OIDC 事件监听
+ *
+ * 监听 token 刷新事件，自动同步 access_token 到 token store
+ */
+const initOidcEvents = () => {
+  if (oidcEventsInitialized || !isOidcEnabled()) return;
+  oidcEventsInitialized = true;
+
+  const userManager = getUserManager();
+  userManager.events.addUserLoaded((user) => {
+    const { setToken } = useTokenStore();
+    setToken(user.access_token);
+  });
+  userManager.events.addUserUnloaded(() => {
+    const { $reset } = useTokenStore();
+    $reset();
+  });
+};
+
 router.beforeEach(async (to) => {
   setRouteEmitter(to);
+
+  /** 初始化 OIDC 事件监听 */
+  initOidcEvents();
+
+  /** OIDC 模式下，同步 access_token 到 token store */
+  if (isOidcEnabled()) {
+    const user = await getOidcUser();
+    const { setToken, getToken } = useTokenStore();
+    if (user && !user.expired) {
+      const currentToken = getToken();
+      if (currentToken !== user.access_token) {
+        setToken(user.access_token);
+      }
+    } else {
+      // OIDC 模式下无有效用户，发起 OIDC 登录（重定向到认证中心）
+      // 回调路径和静默刷新路径不需要触发登录，避免循环
+      const oidcCallbackPaths = [
+        new URL(import.meta.env.APP_OIDC_REDIRECT_URI).pathname,
+        new URL(import.meta.env.APP_OIDC_SILENT_REDIRECT_URI).pathname,
+      ];
+      if (!oidcCallbackPaths.includes(to.path)) {
+        await oidcLogin();
+        return false;
+      }
+    }
+  }
+
   // 获取 token 进行校验
   const { getToken } = useTokenStore();
   const token = getToken();
@@ -86,9 +136,3 @@ router.beforeEach(async (to) => {
     }
   }
 });
-
-// router.afterEach((to) => {
-//     useMetaTitle(to)
-//     useLoadingCheck()
-//     useScrollToTop()
-// })

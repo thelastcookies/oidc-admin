@@ -36,7 +36,20 @@ interface ImportMetaEnv {
   readonly APP_THEME: 'system' | 'light' | 'dark';
   readonly APP_API_BASE_URL: string;
   readonly APP_API_ADMIN_URL: string;
+  readonly APP_API_OIDC_URL: string;
   readonly APP_WHITE_ORIGIN: string;
+  /** OIDC 提供商地址 */
+  readonly APP_OIDC_ISSUER: string;
+  /** OIDC 客户端 ID */
+  readonly APP_OIDC_CLIENT_ID: string;
+  /** OIDC 登录回调地址 */
+  readonly APP_OIDC_REDIRECT_URI: string;
+  /** OIDC 静默刷新回调地址 */
+  readonly APP_OIDC_SILENT_REDIRECT_URI: string;
+  /** OIDC 登出后重定向路径 */
+  readonly APP_OIDC_POST_LOGOUT_REDIRECT_PATH: string;
+  /** OIDC 请求的权限范围 */
+  readonly APP_OIDC_SCOPE: string;
   /**
    * APP_MOCK_TYPE
    * 是否启用 Mock，以及 Mock 来源

@@ -24,6 +24,9 @@ export const useAppStore = defineStore('app', () => {
 
   /**
    * signOut 退出登录
+   *
+   * OIDC 模式下会重定向到认证中心登出端点，
+   * 传统模式下跳转到登录页。
    */
   const signOut = () => {
     return new Promise<void>((resolve) => {
@@ -34,7 +37,11 @@ export const useAppStore = defineStore('app', () => {
       const tokenStore = useTokenStore();
       tokenStore.$reset();
       if (loginEnable.value) {
-        router.push('/login');
+        if (isOidcEnabled()) {
+          oidcLogout().catch(console.error);
+        } else {
+          router.push('/login');
+        }
       } else {
         parent.window.location.assign('');
       }
