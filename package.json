@@ -1,5 +1,5 @@
 {
-  "name": "web-base",
+  "name": "oidc-admin",
   "private": true,
   "version": "0.28.0",
   "type": "module",
@@ -26,6 +26,7 @@
     "mathjs": "^15.2.0",
     "mitt": "^3.0.1",
     "nanoid": "5.1.9",
+    "oidc-client-ts": "^3.5.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.33",
     "vue-draggable-plus": "^0.6.1",
