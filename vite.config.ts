@@ -18,9 +18,10 @@ export default defineConfig(({ command }) => {
         port: 8205,
         proxy: {
           '/oidc-api': {
-            target: 'http://localhost:8190',
+            target: 'https://localhost:8190',
             changeOrigin: true,
-            rewrite: (path: string) => path.replace(/^\/oidc-api/, '')
+            secure: false,
+            rewrite: (path: string) => path.replace(/^\/oidc-api/, ''),
           }
         }
       },
