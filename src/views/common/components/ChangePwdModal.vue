@@ -1,24 +1,20 @@
 <script setup lang="ts">
 import type { Rule } from 'ant-design-vue/es/form';
 import type { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
-import type { ChangePwdRequestBody } from '@/api/admin/home/types';
+import type { ChangePasswordRequest } from '@/api/oidc/me/types';
 
-interface ChangePwdForm extends ChangePwdRequestBody {
+interface ChangePwdForm extends ChangePasswordRequest {
   newPwdConfirm: string;
 }
 
 const open = defineModel('open', { default: false });
 
-const emit = defineEmits<{
-  (e: 'ok'): void
-}>();
-
 const formRef = ref<HTMLFormElement>();
 const loading = ref(false);
 
 const formData = ref<ChangePwdForm>({
-  oldPwd: '',
-  newPwd: '',
+  oldPassword: '',
+  newPassword: '',
   newPwdConfirm: '',
 });
 
@@ -35,7 +31,7 @@ const validatePass = async (_rule: Rule, value: string) => {
 const validatePass2 = async (_rule: Rule, value: string) => {
   if (value === '') {
     return Promise.reject('请再次输入新密码');
-  } else if (value !== formData.value.newPwd) {
+  } else if (value !== formData.value.newPassword) {
     return Promise.reject('新密码与确认密码必须相同');
   } else {
     return Promise.resolve();
@@ -43,8 +39,8 @@ const validatePass2 = async (_rule: Rule, value: string) => {
 };
 
 const rules: Record<string, Rule[]> = {
-  oldPwd: [{ required: true, message: '原密码不可为空' }],
-  newPwd: [{ required: true, validator: validatePass }],
+  oldPassword: [{ required: true, message: '原密码不可为空' }],
+  newPassword: [{ required: true, validator: validatePass }],
   newPwdConfirm: [{ validator: validatePass2 }],
 };
 
@@ -52,17 +48,15 @@ const handleSubmit = async () => {
   loading.value = true;
   try {
     await formRef.value?.validate();
-    const params = {
-      oldPwd: formData.value.oldPwd,
-      newPwd: formData.value.newPwd,
-    };
-    const { Success, Msg } = await changePwd(params);
-    if (Success) {
-      message.success('保存成功，注销中');
-      open.value = false;
-      emit('ok');
+    const { success, msg } = await changePassword({
+      oldPassword: formData.value.oldPassword,
+      newPassword: formData.value.newPassword,
+    });
+    if (success) {
+      message.success('密码修改成功，需重新登录');
+      handleClear();
     } else {
-      message.error({ content: '保存失败，' + Msg });
+      message.error({ content: '保存失败，' + msg });
     }
   } catch (e) {
     if ((e as ValidateErrorEntity)?.errorFields) {
@@ -102,15 +96,15 @@ const handleClear = () => {
     >
       <a-row>
         <a-col :span="24">
-          <a-form-item label="原密码" name="oldPwd">
-            <a-input-password v-model:value="formData.oldPwd" placeholder="请输入原密码" />
+          <a-form-item label="原密码" name="oldPassword">
+            <a-input-password v-model:value="formData.oldPassword" placeholder="请输入原密码" />
           </a-form-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="24">
-          <a-form-item label="新密码" name="newPwd">
-            <a-input-password v-model:value="formData.newPwd" placeholder="请输入新密码" />
+          <a-form-item label="新密码" name="newPassword">
+            <a-input-password v-model:value="formData.newPassword" placeholder="请输入新密码" />
           </a-form-item>
         </a-col>
       </a-row>

@@ -2,7 +2,7 @@
 import type { MenuTreeNode } from '@/types';
 
 const appTitle = import.meta.env.APP_TITLE;
-const { deviceType, loginEnable } = useAppStore();
+const { deviceType } = useAppStore();
 
 defineProps<{
   menu: MenuTreeNode[],
@@ -20,7 +20,7 @@ defineProps<{
                   lt-sm:ml-0 lt-sm:mx-auto">{{ appTitle }}</span>
     </div>
     <HeaderMenu v-if="layoutMode.includes('MENU_TOP') && menu.length" class="flex-1" :menu="menu" />
-    <div v-if="loginEnable" class="h-full lh-13">
+    <div v-if="isOidcEnabled()" class="h-full lh-13">
       <UserAvatar :size="24" />
     </div>
   </div>

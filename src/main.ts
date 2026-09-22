@@ -21,9 +21,7 @@ import 'virtual:uno.css';
 
 /**
  * 应用初始化
- *
- * OIDC 回调必须在 Vue 应用挂载前处理，
- * 因为回调 URL 是真实路径（如 /oidc/callback），不在 hash 路由中。
+ * 在 Vue 应用挂载前处理 OIDC 回调
  */
 const start = async () => {
   const callbackHandled = await handleOidcCallback();

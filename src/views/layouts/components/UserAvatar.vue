@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MenuInfo } from 'ant-design-vue/es/menu/src/interface';
+import { oidcLogout } from '@/utils/oidc.ts';
 
 withDefaults(defineProps<{
   size: number
@@ -16,7 +17,7 @@ const pwdModalOpen = ref(false);
 
 const handleSignOut = () => {
   const hide = message.loading('注销中，请稍候', 0);
-  appStore.signOut().finally(() => {
+  oidcLogout().finally(() => {
     hide();
     message.success('注销成功', 3);
   });
