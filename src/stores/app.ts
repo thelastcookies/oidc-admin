@@ -10,8 +10,6 @@ export const useAppStore = defineStore('app', () => {
   const userAgent = Bowser.getParser(window.navigator.userAgent);
   const deviceType = userAgent.getPlatformType();
 
-  const loginEnable = ref(import.meta.env.APP_LOGIN_ENABLE === 'true');
-
   const message = ref({} as MessageInstance);
   const notification = ref({} as NotificationInstance);
   const modal = ref({} as Omit<ModalStaticFunctions, 'warn'>);
@@ -36,15 +34,12 @@ export const useAppStore = defineStore('app', () => {
       userStore.$reset();
       const tokenStore = useTokenStore();
       tokenStore.$reset();
-      if (loginEnable.value) {
-        if (isOidcEnabled()) {
-          oidcLogout().catch(console.error);
-        } else {
-          router.push('/login');
-        }
+      if (isOidcEnabled()) {
+        oidcLogout().catch(console.error);
       } else {
-        parent.window.location.assign('');
+        router.push('/login');
       }
+
       resolve();
     });
   };
@@ -54,7 +49,6 @@ export const useAppStore = defineStore('app', () => {
     windowInnerHeight,
     userAgent,
     deviceType,
-    loginEnable,
     signOut,
     message, notification, modal,
   };

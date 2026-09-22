@@ -1,6 +1,5 @@
-const loginPath = '/login';
 const samplePath = '/sample';
-const accessWhileList = [loginPath, '/error', '/401', '/403', '/404', '/500'];
+const accessWhileList = ['/error', '/401', '/403', '/404', '/500'];
 
 /** OIDC 事件监听是否已初始化 */
 let oidcEventsInitialized = false;
@@ -54,29 +53,12 @@ router.beforeEach(async (to) => {
     }
   }
 
-  // 获取 token 进行校验
-  const { getToken } = useTokenStore();
-  const token = getToken();
-  const { loginEnable } = useAppStore();
   if (to.path === samplePath && import.meta.env.DEV) {
     // Sample 页面特殊处理
     return;
   } else if (accessWhileList.includes(to.path)) {
-    // 如果目标路径在白名单内
-    if (to.path === loginPath && (!loginEnable || token)) {
-      // 如果是登录页则检查登录配置与登录状态
-      return ({
-        path: '/',
-      });
-    }
-    // 其他页面不干涉
+    // 如果目标路径在白名单内则不干涉
     return;
-  } else if (loginEnable && !token) {
-    // 如果需要登录但未登录，则跳转到登录页
-    return ({
-      path: loginPath,
-      query: { redirect: encodeURIComponent(to.fullPath) },
-    });
   } else {
     // 检查用户信息
     const userStore = useUserStore();
