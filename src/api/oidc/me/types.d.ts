@@ -2,6 +2,7 @@
 export interface CurrentUserInfo {
   id: number;
   username: string;
+  realName: string | null;
   roles: string[];
 }
 

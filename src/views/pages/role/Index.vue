@@ -101,7 +101,7 @@ const onQuery = () => {
           <a-divider v-if="(record as RoleInfo).code !== ADMIN_ROLE_CODE" type="vertical" />
           <a-popconfirm
             v-if="(record as RoleInfo).code !== ADMIN_ROLE_CODE"
-            title="删除后级联解除该角色的用户绑定，确定删除？"
+            title="此操作不可撤销，确定删除？"
             @confirm="handleDelete((record as RoleInfo).id)"
           >
             <a-button btn-in-table danger type="link">删除</a-button>

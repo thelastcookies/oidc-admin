@@ -110,7 +110,7 @@ const onQuery = () => {
           <a-button btn-in-table type="link" @click="handleEdit(EditEnum.EDIT, record as UserInfo)">编辑</a-button>
           <a-divider type="vertical" />
           <a-popconfirm
-            title="删除后将撤销该用户的全部会话，确定删除？"
+            title="此操作不可撤销，确定删除？"
             @confirm="handleDelete((record as UserInfo).id)"
           >
             <a-button btn-in-table danger type="link">删除</a-button>

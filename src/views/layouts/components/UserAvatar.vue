@@ -9,8 +9,10 @@ withDefaults(defineProps<{
 });
 
 const userStore = useUserStore();
-const realName = computed(() => userStore.userInfo ? userStore.userInfo.RealName : '');
-const appStore = useAppStore();
+const realName = computed(() => {
+  const { realName, username } = userStore.userInfo || {};
+  return realName || username || '';
+});
 const { deviceType } = useAppStore();
 
 const pwdModalOpen = ref(false);

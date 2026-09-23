@@ -9,6 +9,7 @@ export interface RoleBrief {
 export interface UserInfo {
   id: number;
   username: string;
+  realName: string | null;
   enabled: boolean;
   roles: RoleBrief[];
   createdAt: string;
@@ -33,6 +34,7 @@ export interface UserListQuery {
 /** 创建用户请求体 */
 export interface CreateUserRequest {
   username: string;
+  realName?: string;
   password: string;
   // 初始角色，缺省不分配
   roleIds?: number[];
@@ -40,8 +42,9 @@ export interface CreateUserRequest {
   enabled?: boolean;
 }
 
-/** 更新用户请求体（username 不允许修改；传入 roleIds 则整体替换角色绑定） */
+/** 更新用户请求体 */
 export interface UpdateUserRequest {
+  realName?: string;
   enabled?: boolean;
   roleIds?: number[];
 }

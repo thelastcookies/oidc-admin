@@ -13,6 +13,14 @@ export const userTableColumns: TableColumnProps[] = [
     width: 160,
   },
   {
+    title: '真实姓名',
+    dataIndex: 'realName',
+    width: 140,
+    customRender: ({ text }: { text: string | null }) => {
+      return text || '-';
+    },
+  },
+  {
     title: '角色',
     dataIndex: 'roles',
     width: 240,

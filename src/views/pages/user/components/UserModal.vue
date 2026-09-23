@@ -32,12 +32,14 @@ const formRef = ref<FormInstance>();
 
 const formData = ref<{
   username: string;
+  realName: string;
   password: string;
   roleIds: number[];
   enabled: boolean;
   newPassword: string;
 }>({
   username: '',
+  realName: '',
   password: '',
   roleIds: [],
   enabled: true,
@@ -75,6 +77,7 @@ const handleSubmit = async () => {
     if (props.type === EditEnum.ADD) {
       const { success, msg } = await createUser({
         username: formData.value.username,
+        realName: formData.value.realName || undefined,
         password: formData.value.password,
         roleIds: formData.value.roleIds.length ? formData.value.roleIds : undefined,
         enabled: formData.value.enabled,
@@ -89,6 +92,7 @@ const handleSubmit = async () => {
       }
     } else if (props.type === EditEnum.EDIT) {
       const { success, msg } = await updateUser(props.userId!, {
+        realName: formData.value.realName,
         enabled: formData.value.enabled,
         // 传入则整体替换角色绑定
         roleIds: formData.value.roleIds,
@@ -125,6 +129,7 @@ const handleClear = () => {
   formRef.value?.resetFields();
   formData.value = {
     username: '',
+    realName: '',
     password: '',
     roleIds: [],
     enabled: true,
@@ -137,6 +142,7 @@ const fetchDetail = async (userId: number) => {
   if (success && data) {
     formData.value = {
       username: data.username,
+      realName: data.realName || '',
       password: '',
       roleIds: data.roles.map((role) => role.id),
       enabled: data.enabled,
@@ -179,6 +185,9 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
     >
       <a-form-item label="用户名" name="username">
         <a-input v-model:value="formData.username" :disabled="!isAdd" placeholder="登录账号，创建后不可修改" />
+      </a-form-item>
+      <a-form-item label="真实姓名" name="realName">
+        <a-input v-model:value="formData.realName" placeholder="选填" />
       </a-form-item>
       <a-form-item v-if="isAdd" label="密码" name="password">
         <a-input-password v-model:value="formData.password" placeholder="登录密码" />
