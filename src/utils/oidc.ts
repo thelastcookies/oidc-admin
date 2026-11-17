@@ -22,10 +22,17 @@ const oidcSettings: UserManagerSettings = {
   client_id: import.meta.env.APP_OIDC_CLIENT_ID,
   redirect_uri: import.meta.env.APP_OIDC_REDIRECT_URI,
   post_logout_redirect_uri: `${window.location.origin}${import.meta.env.APP_OIDC_POST_LOGOUT_REDIRECT_PATH}`,
-  silent_redirect_uri: import.meta.env.APP_OIDC_SILENT_REDIRECT_URI,
   scope: import.meta.env.APP_OIDC_SCOPE,
   response_type: 'code',
   automaticSilentRenew: true,
+  /**
+   * OIDC Core 要求 offline_access 必须与 prompt=consent 同时请求，
+   * 否则认证服务器会剔除该 scope，导致拿不到 refresh_token。
+   * 仅影响顶层登录跳转；静默刷新走 refresh_token grant，不经过授权端点。
+   */
+  prompt: 'consent',
+  /** 静默刷新失败重试上限，防止无限循环刷请求 */
+  maxSilentRenewTimeoutRetries: 3,
   userStore: new WebStorageStateStore({ store: window.localStorage }),
 };
 
@@ -67,8 +74,6 @@ const oidcLogout = async (): Promise<void> => {
 
 /** 登录回调路径（从完整 URI 提取） */
 const callbackPath = extractPath(import.meta.env.APP_OIDC_REDIRECT_URI);
-/** 静默刷新回调路径（从完整 URI 提取） */
-const silentCallbackPath = extractPath(import.meta.env.APP_OIDC_SILENT_REDIRECT_URI);
 
 /**
  * 处理 OIDC 回调
@@ -81,8 +86,7 @@ const silentCallbackPath = extractPath(import.meta.env.APP_OIDC_SILENT_REDIRECT_
  *   3. 将 access_token、id_token、refresh_token 存入 localStorage
  *   4. 重定向到应用主页
  *
- * 静默刷新回调流程（/silent-callback）：
- *   在 iframe 中执行，仅处理令牌刷新，无需重定向
+ * scope 包含 offline_access，使用 refresh_token 完成令牌刷新。
  *
  * @returns 是否处理了回调（true 表示回调已处理，不需要挂载 Vue 应用）
  */
@@ -90,16 +94,6 @@ const handleOidcCallback = async (): Promise<boolean> => {
   if (!isOidcEnabled()) return false;
 
   const currentPath = window.location.pathname;
-
-  /** 静默刷新回调（在 iframe 中执行） */
-  if (currentPath === silentCallbackPath) {
-    try {
-      await getUserManager().signinSilentCallback();
-    } catch (e) {
-      console.error('OIDC silent callback error:', e);
-    }
-    return true;
-  }
 
   /** 登录回调：用授权码换取令牌 */
   if (currentPath === callbackPath) {

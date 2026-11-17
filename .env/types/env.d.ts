@@ -44,8 +44,6 @@ interface ImportMetaEnv {
   readonly APP_OIDC_CLIENT_ID: string;
   /** OIDC 登录回调地址 */
   readonly APP_OIDC_REDIRECT_URI: string;
-  /** OIDC 静默刷新回调地址 */
-  readonly APP_OIDC_SILENT_REDIRECT_URI: string;
   /** OIDC 登出后重定向路径 */
   readonly APP_OIDC_POST_LOGOUT_REDIRECT_PATH: string;
   /** OIDC 请求的权限范围 */

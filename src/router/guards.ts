@@ -41,12 +41,8 @@ router.beforeEach(async (to) => {
       }
     } else {
       // OIDC 模式下无有效用户，发起 OIDC 登录（重定向到认证中心）
-      // 回调路径和静默刷新路径不需要触发登录，避免循环
-      const oidcCallbackPaths = [
-        new URL(import.meta.env.APP_OIDC_REDIRECT_URI).pathname,
-        new URL(import.meta.env.APP_OIDC_SILENT_REDIRECT_URI).pathname,
-      ];
-      if (!oidcCallbackPaths.includes(to.path)) {
+      const oidcCallbackPath = new URL(import.meta.env.APP_OIDC_REDIRECT_URI).pathname;
+      if (oidcCallbackPath !== to.path) {
         await oidcLogin();
         return false;
       }
