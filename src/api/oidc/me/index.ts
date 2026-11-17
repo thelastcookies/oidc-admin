@@ -1,9 +1,9 @@
 import type { OidcResponseBody } from '@/api/oidc/types';
-import type { ChangePasswordRequest, CurrentUserInfo } from './types';
+import type { ChangePasswordRequest, OidcUserInfo } from './types';
 
 /** 获取当前用户信息（id、username、roles），身份来自自身 Access Token */
 export const getCurrentUser = () => {
-  return useGet<OidcResponseBody<CurrentUserInfo>>(
+  return useGet<OidcUserInfo>(
     `${OIDC_URL}/me`,
     undefined,
     { token: true },
@@ -17,7 +17,7 @@ export const getCurrentUser = () => {
  */
 export const changePassword = (data: ChangePasswordRequest) => {
   return usePut<OidcResponseBody<{ msg: string }>, ChangePasswordRequest>(
-    `${OIDC_URL}/me/password`,
+    `${OIDC_URL}/password`,
     data,
     { token: true },
   );

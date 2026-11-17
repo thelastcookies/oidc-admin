@@ -16,18 +16,18 @@ export const useUserStore = defineStore('user', () => {
             reject(new Error(WITH_UNAUTHORIZED));
             return;
           }
-          getCurrentUser().then(({ success, data, msg }) => {
-            if (success && data) {
+          getCurrentUser().then((res) => {
+            if (res) {
               userInfo.value = {
-                id: data.id,
-                username: data.username,
-                realName: data.realName || '',
+                id: res.sub,
+                username: res.username,
+                realName: res.realName || '',
               };
               // 角色编码数组用于权限判断
-              permCodes.value = data.roles;
+              permCodes.value = res.roles;
               resolve();
             } else {
-              reject(new Error(msg || WITH_UNAUTHORIZED));
+              reject(new Error(WITH_UNAUTHORIZED));
             }
           }).catch(e => reject(e));
         }).catch(e => reject(e));
