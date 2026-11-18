@@ -1,7 +1,6 @@
 import type { OidcResponseBody } from '@/api/oidc/types';
 import type {
   ClientInfo,
-  ClientDetail,
   CreateClientRequest,
   UpdateClientRequest,
 } from './types';
@@ -17,7 +16,7 @@ export const getClientList = () => {
 
 /** 获取客户端详情 */
 export const getClient = (clientId: string) => {
-  return useGet<OidcResponseBody<ClientDetail>>(
+  return useGet<OidcResponseBody<ClientInfo>>(
     `${OIDC_URL}/client/${clientId}`,
     undefined,
     { token: true },

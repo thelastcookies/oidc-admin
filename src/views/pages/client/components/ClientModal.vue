@@ -46,7 +46,7 @@ const formData = ref<{
   post_logout_redirect_uris: [],
   grant_types: ['authorization_code', 'refresh_token'],
   response_types: ['code'],
-  token_endpoint_auth_method: 'client_secret_post',
+  token_endpoint_auth_method: 'none',
 });
 
 const rules: Record<string, Rule[]> = {
@@ -141,7 +141,7 @@ const handleClear = () => {
     post_logout_redirect_uris: [],
     grant_types: ['authorization_code', 'refresh_token'],
     response_types: ['code'],
-    token_endpoint_auth_method: 'client_secret_post',
+    token_endpoint_auth_method: 'none',
   };
   newRedirectUri.value = '';
   newPostLogoutUri.value = '';
@@ -158,7 +158,7 @@ const fetchDetail = async (clientId: string) => {
       post_logout_redirect_uris: [...(data.post_logout_redirect_uris || [])],
       grant_types: [...data.grant_types],
       response_types: [...data.response_types],
-      token_endpoint_auth_method: data.token_endpoint_auth_method || 'client_secret_post',
+      token_endpoint_auth_method: data.token_endpoint_auth_method || 'none',
     };
   }
 };
@@ -180,6 +180,7 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
     :confirm-loading="loading"
     ok-text="保存"
     :width="640"
+    :mask-closable="false"
     @ok="handleSubmit"
     @cancel="handleClear"
   >
@@ -189,6 +190,7 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
       :label-col="{ span: 5 }"
       :wrapper-col="{ span: 18 }"
       :rules="rules"
+      validate-trigger="blur"
       :disabled="isView || loading"
       class="px-4 pt-4"
     >
@@ -203,7 +205,7 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
       </a-form-item>
 
       <!-- 回调地址 -->
-      <a-form-item label="回调地址" name="redirect_uris" :required="isAdd">
+      <a-form-item label="回调地址" name="redirect_uris" :required="isAdd" tooltip="IdP 认证成功后浏览器重定向回当前 Client/RP 的地址，用于接收授权码 code 并完成登录">
         <div class="w-full">
           <div v-for="(uri, index) in formData.redirect_uris" :key="index" class="flex items-center mb-1">
             <a-input :value="uri" disabled class="flex-1" />
@@ -221,7 +223,7 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
       </a-form-item>
 
       <!-- 登出回调地址 -->
-      <a-form-item label="登出回调地址" name="post_logout_redirect_uris">
+      <a-form-item label="登出回调地址" name="post_logout_redirect_uris" tooltip="从 IdP 登出后，浏览器将跳转的地址，用于指向登出确认页/重新发起登录页">
         <div class="w-full">
           <div v-for="(uri, index) in formData.post_logout_redirect_uris" :key="index" class="flex items-center mb-1">
             <a-input :value="uri" disabled class="flex-1" />

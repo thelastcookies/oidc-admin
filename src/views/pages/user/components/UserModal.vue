@@ -171,6 +171,7 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
     :confirm-loading="loading"
     ok-text="保存"
     :width="560"
+    :mask-closable="false"
     @ok="handleSubmit"
     @cancel="handleClear"
   >

@@ -80,6 +80,7 @@ const handleClear = () => {
     title="修改密码"
     :confirm-loading="loading"
     ok-text="保存"
+    :mask-closable="false"
     @ok="handleSubmit"
     @cancel="handleClear"
   >
