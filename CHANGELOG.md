@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/thelastcookies/oidc-admin/compare/v1.0.0...v1.0.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* 修复退出时残留数据为情况的问题 ([09d832d](https://github.com/thelastcookies/oidc-admin/commit/09d832da751145ecf29b30ed0757915509955b75))
+
 ## 1.0.0 (2026-11-18)
 
 
