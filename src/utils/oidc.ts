@@ -4,8 +4,8 @@
  * 封装 oidc-client-ts 的 UserManager，提供登录、登出、回调处理等功能。
  * 所有 OIDC 配置从环境变量读取，方便不同环境切换。
  */
-import { UserManager, WebStorageStateStore } from 'oidc-client-ts';
 import type { User, UserManagerSettings } from 'oidc-client-ts';
+import { UserManager, WebStorageStateStore } from 'oidc-client-ts';
 
 /** 从完整 URI 中提取路径部分（如 http://localhost:8205/callback → /callback） */
 const extractPath = (uri: string): string => {
@@ -21,7 +21,7 @@ const oidcSettings: UserManagerSettings = {
   authority: import.meta.env.APP_OIDC_ISSUER,
   client_id: import.meta.env.APP_OIDC_CLIENT_ID,
   redirect_uri: import.meta.env.APP_OIDC_REDIRECT_URI,
-  post_logout_redirect_uri: `${window.location.origin}${import.meta.env.APP_OIDC_POST_LOGOUT_REDIRECT_PATH}`,
+  post_logout_redirect_uri: import.meta.env.APP_OIDC_POST_LOGOUT_REDIRECT_URI,
   scope: import.meta.env.APP_OIDC_SCOPE,
   response_type: 'code',
   automaticSilentRenew: true,
@@ -104,10 +104,11 @@ const handleOidcCallback = async (): Promise<boolean> => {
         access_token: user.access_token.slice(0, 8) + '...',
         expires_at: new Date(user.expires_at! * 1000).toLocaleString(),
       });
-      window.location.href = '/';
+      window.location.href = import.meta.env.BASE_URL;
     } catch (e) {
       console.error('OIDC callback error:', e);
-      window.location.href = '/#/login';
+      // todo 更鲜明的错误提醒
+      window.location.href = import.meta.env.APP_OIDC_POST_LOGOUT_REDIRECT_URI || 'https://localhost:8191/login';
     }
     return true;
   }
