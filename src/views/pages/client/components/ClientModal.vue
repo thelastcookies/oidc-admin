@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { ClientInfo } from '@/api/oidc/client/types';
 import type { EditEnum as EditEnumType } from '@/constants/enums';
 import type { FormInstance } from 'ant-design-vue/es/form/Form';
 import type { Rule } from 'ant-design-vue/es/form';
@@ -205,7 +204,8 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
       </a-form-item>
 
       <!-- 回调地址 -->
-      <a-form-item label="回调地址" name="redirect_uris" :required="isAdd" tooltip="IdP 认证成功后浏览器重定向回当前 Client/RP 的地址，用于接收授权码 code 并完成登录">
+      <a-form-item label="回调地址" name="redirect_uris" :required="isAdd"
+        tooltip="IdP 认证成功后浏览器重定向回当前 Client/RP 的地址，用于接收授权码 code 并完成登录">
         <div class="w-full">
           <div v-for="(uri, index) in formData.redirect_uris" :key="index" class="flex items-center mb-1">
             <a-input :value="uri" disabled class="flex-1" />
@@ -214,7 +214,8 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
             </a-button>
           </div>
           <div v-if="!isView" class="flex gap-1">
-            <a-input v-model:value="newRedirectUri" placeholder="输入回调 URI 后回车添加" class="flex-1" @press-enter="addRedirectUri" />
+            <a-input v-model:value="newRedirectUri" placeholder="输入回调 URI 后回车添加" class="flex-1"
+              @press-enter="addRedirectUri" />
             <a-button type="dashed" @click="addRedirectUri">
               <BaseIcon icon="i-mdi-plus" />
             </a-button>
@@ -223,7 +224,8 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
       </a-form-item>
 
       <!-- 登出回调地址 -->
-      <a-form-item label="登出回调地址" name="post_logout_redirect_uris" tooltip="从 IdP 登出后，浏览器将跳转的地址，用于指向登出确认页/重新发起登录页">
+      <a-form-item label="登出回调地址" name="post_logout_redirect_uris"
+        tooltip="从 IdP 登出后，浏览器将跳转的地址，用于指向登出确认页/重新发起登录页。如缺省则跳转到默认端点 `/session/end/success`。">
         <div class="w-full">
           <div v-for="(uri, index) in formData.post_logout_redirect_uris" :key="index" class="flex items-center mb-1">
             <a-input :value="uri" disabled class="flex-1" />
@@ -232,7 +234,8 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
             </a-button>
           </div>
           <div v-if="!isView" class="flex gap-1">
-            <a-input v-model:value="newPostLogoutUri" placeholder="输入登出回调 URI 后回车添加" class="flex-1" @press-enter="addPostLogoutUri" />
+            <a-input v-model:value="newPostLogoutUri" placeholder="输入登出回调 URI 后回车添加" class="flex-1"
+              @press-enter="addPostLogoutUri" />
             <a-button type="dashed" @click="addPostLogoutUri">
               <BaseIcon icon="i-mdi-plus" />
             </a-button>
@@ -241,13 +244,16 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
       </a-form-item>
 
       <a-form-item label="授权类型" name="grant_types">
-        <a-select v-model:value="formData.grant_types" mode="multiple" :options="grantTypeOptions" placeholder="选择授权类型" />
+        <a-select v-model:value="formData.grant_types" mode="multiple" :options="grantTypeOptions"
+          placeholder="选择授权类型" />
       </a-form-item>
       <a-form-item label="响应类型" name="response_types">
-        <a-select v-model:value="formData.response_types" mode="multiple" :options="responseTypeOptions" placeholder="选择响应类型" />
+        <a-select v-model:value="formData.response_types" mode="multiple" :options="responseTypeOptions"
+          placeholder="选择响应类型" />
       </a-form-item>
       <a-form-item label="认证方式" name="token_endpoint_auth_method">
-        <a-select v-model:value="formData.token_endpoint_auth_method" :options="tokenAuthMethodOptions" placeholder="选择令牌端点认证方式" />
+        <a-select v-model:value="formData.token_endpoint_auth_method" :options="tokenAuthMethodOptions"
+          placeholder="选择令牌端点认证方式" />
       </a-form-item>
     </a-form>
   </a-modal>
