@@ -12,10 +12,6 @@ import { createPinia } from 'pinia';
 import router from '@/router';
 import '@/router/guards.ts';
 
-// UI框架 ant-design-vue
-import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/reset.css';
-
 // UnoCSS
 import 'virtual:uno.css';
 
@@ -30,7 +26,6 @@ const start = async () => {
   const app = createApp(App);
   app.use(createPinia());
   app.use(router);
-  app.use(Antd);
   app.mount('#app');
 };
 

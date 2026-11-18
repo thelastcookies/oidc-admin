@@ -1,5 +1,5 @@
 import { defineConfig, loadEnv } from 'vite';
-import { createVitePlugins } from './plugins';
+import { createVitePlugins } from './plugins/index.ts';
 import { fileURLToPath } from 'node:url';
 
 const baseSrc = fileURLToPath(new URL('./src', import.meta.url));
