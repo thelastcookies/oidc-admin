@@ -62,3 +62,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+/** 应用版本号，由 vite define 注入，与 package.json 的 version 保持一致 */
+declare const __APP_VERSION__: string;
