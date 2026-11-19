@@ -26,7 +26,7 @@ export function createVitePlugins() {
     AutoImportPluginConfig,
     VueComponentPluginConfig,
     VisualizerPluginConfig,
-    BasicSslPluginConfig,
+    // BasicSslPluginConfig,
   ];
   return vitePluginList;
 }
