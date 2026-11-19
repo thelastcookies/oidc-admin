@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/thelastcookies/oidc-admin/compare/v1.0.1...v1.1.0) (2026-11-19)
+
+
+### Features
+
+* 新增版权和版本展示功能 ([5cad2fc](https://github.com/thelastcookies/oidc-admin/commit/5cad2fc872d903b1193fb0f9c33f96117e77b92f))
+
+
+### Bug Fixes
+
+* 修复交互问题，提升体验 ([333bb8a](https://github.com/thelastcookies/oidc-admin/commit/333bb8a86fce1d8346267c7097f5dd8b833eb652))
+
 ## [1.0.1](https://github.com/thelastcookies/oidc-admin/compare/v1.0.0...v1.0.1) (2026-11-18)
 
 
