@@ -83,6 +83,8 @@ const removePostLogoutUri = (index: number) => {
 const handleSubmit = async () => {
   loading.value = true;
   try {
+    if (newRedirectUri.value) addRedirectUri();
+    if (newPostLogoutUri.value) addPostLogoutUri();
     await formRef.value?.validate();
     if (props.type === EditEnum.ADD) {
       const { success, msg } = await createClient({
@@ -170,6 +172,7 @@ watch(open, (v) => {
 
 const isView = computed(() => props.type === EditEnum.VIEW);
 const isAdd = computed(() => props.type === EditEnum.ADD);
+const isAddOrEdit = computed(() => props.type === EditEnum.ADD || props.type === EditEnum.EDIT);
 </script>
 
 <template>
@@ -194,7 +197,7 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
       class="px-4 pt-4"
     >
       <a-form-item label="客户端 ID" name="client_id">
-        <a-input v-model:value="formData.client_id" :disabled="!isAdd" placeholder="唯一标识，如 my-app" />
+        <a-input v-model:value="formData.client_id" :disabled="isView" placeholder="唯一标识，如 my-app" />
       </a-form-item>
       <a-form-item v-if="isAdd" label="客户端密钥" name="client_secret">
         <a-input-password v-model:value="formData.client_secret" placeholder="用于 OIDC 认证的密钥" />
@@ -204,18 +207,26 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
       </a-form-item>
 
       <!-- 回调地址 -->
-      <a-form-item label="回调地址" name="redirect_uris" :required="isAdd"
-        tooltip="IdP 认证成功后浏览器重定向回当前 Client/RP 的地址，用于接收授权码 code 并完成登录">
+      <a-form-item label="回调地址" name="redirect_uris" :required="isAddOrEdit"
+        tooltip="IdP 认证成功后浏览器重定向回当前 Client/RP 的地址，用于接收授权码 code 并完成登录。通常以 `/callback` 结尾。">
         <div class="w-full">
-          <div v-for="(uri, index) in formData.redirect_uris" :key="index" class="flex items-center mb-1">
-            <a-input :value="uri" disabled class="flex-1" />
-            <a-button v-if="!isView" type="link" danger @click="removeRedirectUri(index)">
+          <div v-for="(uri, index) in formData.redirect_uris" :key="index" class="flex gap-1 mb-1">
+            <a-form-item :name="['redirect_uris', index]" class="flex-1 mb-0!">
+              <a-input :value="uri" :disabled="isView" class="flex-1" />
+            </a-form-item>
+            <a-button v-if="isAddOrEdit" type="link" danger @click="removeRedirectUri(index)">
               <BaseIcon icon="i-mdi-close-circle" />
             </a-button>
           </div>
-          <div v-if="!isView" class="flex gap-1">
-            <a-input v-model:value="newRedirectUri" placeholder="输入回调 URI 后回车添加" class="flex-1"
-              @press-enter="addRedirectUri" />
+          <div class="flex gap-1">
+            <a-form-item v-if="isAddOrEdit" name="newRedirectUri" class="flex-1 mb-0!"
+              :validate-status="formData.redirect_uris.includes(newRedirectUri) ? 'error': undefined"
+              :help="formData.redirect_uris.includes(newRedirectUri) ? '回调地址不可重复' : undefined"
+            >
+              <a-input v-model:value="newRedirectUri" placeholder="输入回调 URI 后回车以添加" class="flex-1" allow-clear
+                @blur="newRedirectUri.length ? addRedirectUri() : undefined"
+                @press-enter="addRedirectUri" />
+            </a-form-item>
             <a-button type="dashed" @click="addRedirectUri">
               <BaseIcon icon="i-mdi-plus" />
             </a-button>
@@ -227,15 +238,23 @@ const isAdd = computed(() => props.type === EditEnum.ADD);
       <a-form-item label="登出回调地址" name="post_logout_redirect_uris"
         tooltip="从 IdP 登出后，浏览器将跳转的地址，用于指向登出确认页/重新发起登录页。如缺省则跳转到默认端点 `/session/end/success`。">
         <div class="w-full">
-          <div v-for="(uri, index) in formData.post_logout_redirect_uris" :key="index" class="flex items-center mb-1">
-            <a-input :value="uri" disabled class="flex-1" />
-            <a-button v-if="!isView" type="link" danger @click="removePostLogoutUri(index)">
+          <div v-for="(uri, index) in formData.post_logout_redirect_uris" :key="index" class="flex gap-1 mb-1">
+            <a-form-item :name="['post_logout_redirect_uris', index]" class="flex-1 mb-0!">
+              <a-input :value="uri" :disabled="isView" class="flex-1" />
+            </a-form-item>
+            <a-button v-if="isAddOrEdit" type="link" danger @click="removePostLogoutUri(index)">
               <BaseIcon icon="i-mdi-close-circle" />
             </a-button>
           </div>
-          <div v-if="!isView" class="flex gap-1">
-            <a-input v-model:value="newPostLogoutUri" placeholder="输入登出回调 URI 后回车添加" class="flex-1"
-              @press-enter="addPostLogoutUri" />
+          <div class="flex gap-1">
+            <a-form-item v-if="isAddOrEdit" name="newPostLogoutUri" class="flex-1 mb-0!"
+              :validate-status="formData.post_logout_redirect_uris.includes(newPostLogoutUri) ? 'error' : undefined"
+              :help="formData.post_logout_redirect_uris.includes(newPostLogoutUri) ? '登出回调地址不可重复' : undefined"
+            >
+              <a-input v-model:value="newPostLogoutUri" placeholder="输入登出回调 URI 后回车以添加" class="flex-1"
+                allow-clear
+                @blur="newPostLogoutUri.length ? addPostLogoutUri() : undefined" @press-enter="addPostLogoutUri" />
+            </a-form-item>
             <a-button type="dashed" @click="addPostLogoutUri">
               <BaseIcon icon="i-mdi-plus" />
             </a-button>
