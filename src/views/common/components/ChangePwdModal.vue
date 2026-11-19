@@ -10,7 +10,7 @@ interface ChangePwdForm extends ChangePasswordRequest {
 const open = defineModel('open', { default: false });
 
 const emit = defineEmits<{
-  (e: 'success'): void
+  (e: 'ok'): void
 }>();
 
 const formRef = ref<HTMLFormElement>();
@@ -59,7 +59,7 @@ const handleSubmit = async () => {
     if (success) {
       message.success('密码修改成功，需重新登录');
       handleClear();
-      emit('success');
+      emit('ok');
     } else {
       message.error({ content: '保存失败，' + msg });
     }
