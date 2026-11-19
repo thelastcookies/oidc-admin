@@ -6,6 +6,6 @@ const version = __APP_VERSION__;
 
 <template>
   <div class="absolute w-full text-center p-2! bottom-0">
-    <span class="text-sm text-gray-400">Copyright © {{ year }} {{ author }}. All rights reserved. · v{{ version }}</span>
+    <span class="text-sm text-gray-400">v{{ version }} · Copyright © {{ year }} {{ author }}. All rights reserved.</span>
   </div>
 </template>
